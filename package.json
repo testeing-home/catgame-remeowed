@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "break_eternity.js": "^2.1.0",
     "solid-js": "^1.8.18"
   },
   "devDependencies": {
