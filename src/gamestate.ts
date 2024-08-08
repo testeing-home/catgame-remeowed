@@ -18,18 +18,18 @@ class Upgrade {
 }
 
 export const [dataStore, setDatastore] = createStore({
-    cats: Decimal.dZero,
+    cats: new Decimal(11),
     catLimit: new Decimal(1000),
     catsPerSecond: Decimal.dZero,
     multiplier: Decimal.dOne,
     upgrades: {
         catSummoner: new Upgrade("Cat Summoner", 10, 1.75, () => {
-            dataStore.catsPerSecond = dataStore.catsPerSecond.plus(1)
+            setDatastore("catsPerSecond", dataStore.catsPerSecond.plus(1))
         }),
         catFood: new Upgrade("Cat Food", 25, 2.05, () => {
 
         })
-    } as { [key: string]: Upgrade }
+    } as {[key: string]: Upgrade}
 })
 
 export const [state, setState] = createStore({

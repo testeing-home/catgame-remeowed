@@ -1,9 +1,10 @@
 :root {
-	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+/*	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
+	font-family: 'B612 Mono', 'SF Mono', 'JetBrains Mono', 'Space Mono', 'Hack', 'Consolas', monospace;
 	line-height: 1.5;
 	font-weight: 400;
 
-	color-scheme: light dark;
+	color-scheme: dark;
 	color: rgba(255, 255, 255, 0.87);
 	background-color: #242424;
 
@@ -47,6 +48,7 @@ button {
 	background-color: #1a1a1a;
 	cursor: pointer;
 	transition: border-color 0.25s;
+	color: inherit;
 }
 
 button:hover {
@@ -56,4 +58,9 @@ button:hover {
 button:focus,
 button:focus-visible {
 	outline: 4px auto -webkit-focus-ring-color;
+}
+
+.game-value-display {
+	font-size: xx-large;
+	color: white;
 }
