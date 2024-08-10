@@ -3,6 +3,7 @@ import './App.css'
 import utils, { dataStore, setDatastore, state } from './gamestate';
 import Tab from './Tab';
 import Upgrade from './Upgrade';
+import { Toaster } from 'react-hot-toast';
 
 let lastTime = Date.now();
 let dt = NaN;
@@ -30,6 +31,7 @@ function App() {
 
 	return (
 		<>
+			<Toaster />
 			<div style={{ position: "sticky" }}>
 				<h3>{newsTicker()}</h3>
 				<h4 style={{ color: "GrayText" }}>The Cat Limit is {dataStore.catLimit.toString()} cats</h4>

@@ -7,6 +7,33 @@ const utils = {
     getRandomNewsTicker() {
         return newsTickerMessages[Math.floor(Math.random() * newsTickerMessages.length)];
     },
+    getKey(key: string | null = null) {
+        if (key) return key;
+        const lkey = localStorage.getItem("key");
+        if (!lkey) {
+            localStorage.setItem("key", this.cyrb53("SEK"+Math.random()).toString());
+            return localStorage.getItem("key");
+        } else {
+            return lkey;
+        }
+    },
+    cyrb53(str: string, seed = 0) {
+        let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+        for(let i = 0, ch; i < str.length; i++) {
+            ch = str.charCodeAt(i);
+            h1 = Math.imul(h1 ^ ch, 2654435761);
+            h2 = Math.imul(h2 ^ ch, 1597334677);
+        }
+        h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+        h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+        h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      
+        return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+    },
+    validKey(key: string) {
+        return key.startsWith(this.cyrb53("SEK").toString());
+    }
 }
 
 class Upgrade {
@@ -29,7 +56,11 @@ export const [dataStore, setDatastore] = createStore({
         catFood: new Upgrade("Cat Food", 25, 2.05, () => {
 
         })
-    } as {[key: string]: Upgrade}
+    } as {[key: string]: Upgrade},
+    save(key: string | null = null) {
+        if (!key) key = utils.getKey();
+        
+    }
 })
 
 export const [state, setState] = createStore({
