@@ -38,8 +38,7 @@ const utils = {
 }
 
 class Upgrade {
-    level: Decimal = Decimal.dZero;
-    constructor(public name: string, private nextCost1: number, private nextCost2: number, public buySuccess: VoidFunction = () => { }) { }
+    constructor(public name: string, private nextCost1: number, private nextCost2: number, public level = Decimal.dZero, public buySuccess: VoidFunction = () => { }) { }
     get cost() {
         return new Decimal(this.nextCost1).times(new Decimal(this.nextCost2).pow(this.level))
     }
@@ -117,9 +116,9 @@ export const [dataStore, setDatastore] = createStore({
                         for (const upgradeSet of Object.entries(value)) {
                             const name = upgradeSet[0]
                             const upgrade: any = upgradeSet[1]
-                            console.debug(key, value)
-                            console.debug(name, upgrade)
-                            json[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
+                            // console.debug(key, value)
+                            // console.debug(name, upgrade)
+                            json[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, new Decimal(upgrade.level), dataStore.upgrades[name].buySuccess)
                         }
                     }
                     // if (key === "catsPerTick") continue;
@@ -164,8 +163,8 @@ export const [dataStore, setDatastore] = createStore({
                     const name = upgradeSet[0]
                     const upgrade: any = upgradeSet[1]
                     console.debug(key, value)
-                    console.debug(name, upgrade)
-                    data[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
+                    console.debug(upgradeSet, name, upgrade)
+                    data[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, new Decimal(upgrade.level), dataStore.upgrades[name].buySuccess)
                 }
             }
             for (const [dk, dv] of Object.entries(this)) {

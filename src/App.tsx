@@ -10,7 +10,7 @@ let dt = NaN;
 let tps = 20;
 let maxTPS = 200;
 
-const VERSION = "RA-1.0.0"
+const VERSION = "RA$-1.0.0"
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -69,6 +69,12 @@ function App() {
 				<button onclick={() => { dataStore.save(urlInput.value, keyInput.value) }}>Save</button>
 				<button onclick={() => { dataStore.load(urlInput.value, keyInput.value) }}>Load</button>
 				<button onclick={() => { localStorage.removeItem("key"); localStorage.removeItem("last key used") }}>Reset Key</button>
+			</Show>
+			<Show when={state.tabActive === "Cat Limit"}>
+				<h3>You are on CL{dataStore.catLimit.log(1000).toString()}</h3>
+				<button onclick={() => {
+					// TODO: cat limit
+				}}>Reset for cat limit increase</button>
 			</Show>
 			<Show when={state.tabActive === "null"}>
 				<p>Loafing...</p>

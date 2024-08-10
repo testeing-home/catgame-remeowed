@@ -47,3 +47,12 @@ This version had quite a lot of changes.
 ### Removals
 - Buy success function of Cat Summoner upgrade
 - JSON Error handler (because it wouldn't show me where the exception occured)
+
+## RA$-1.0.1
+Quick fix for saving/loading upgrades
+
+### Additions
+- Cat limit prototype
+
+### Changes
+- Load upgrade levels
