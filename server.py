@@ -7,9 +7,9 @@ key_data = CatDB("database/key.json", none={})
 
 @app.route("/get/<key>", methods=["GET"])
 def get_key_data(key: str):
-	return key_data[key]
+	return Response(key_data[key])
 
 @app.route("/set/<key>", methods=["POST"])
 def set_key_data(key: str):
-	key_data[key] = request.get_json().get("data")
+	key_data[key] = request.get_json()
 	return Response(None, 200)
