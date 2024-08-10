@@ -1,5 +1,5 @@
 :root {
-/*	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
+	/*	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
 	font-family: 'B612 Mono', 'SF Mono', 'JetBrains Mono', 'Space Mono', 'Hack', 'Consolas', monospace;
 	line-height: 1.5;
 	font-weight: 400;
@@ -49,6 +49,7 @@ button {
 	cursor: pointer;
 	transition: border-color 0.25s;
 	color: inherit;
+	margin: 5px 10px;
 }
 
 button:hover {

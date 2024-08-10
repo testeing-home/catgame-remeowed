@@ -56,3 +56,13 @@ Quick fix for saving/loading upgrades
 
 ### Changes
 - Load upgrade levels
+
+## RA$-1.1.0
+Cat Limits are added!
+
+### Additions
+- Reset your cats and upgrades to increase the cat limit and unlock new things that aren't added yet
+
+### Changes
+- Buttons now have a margin around them of 10 pixels
+- Datastore section now looks nicer

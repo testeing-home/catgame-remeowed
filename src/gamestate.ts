@@ -175,6 +175,12 @@ export const [dataStore, setDatastore] = createStore({
         }
         setDatastore(reconcile(data));
         toast.success("Loaded from local storage.");
+    },
+    clReset() {
+        setDatastore("cats", new Decimal(11));
+        for (const upgrade of Object.values(this.upgrades)) {
+            upgrade.level = Decimal.dZero;
+        }
     }
 })
 

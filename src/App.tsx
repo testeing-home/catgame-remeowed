@@ -10,7 +10,7 @@ let dt = NaN;
 let tps = 20;
 let maxTPS = 200;
 
-const VERSION = "RA$-1.0.0"
+const VERSION = "RA$-1.1.0"
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -50,6 +50,7 @@ function App() {
 				<h5>You gain <span class='game-value-display'>{dataStore.catsPerTick.toStringWithDecimalPlaces(2)}</span> cats per tick</h5>
 				<div>
 					<Tab name='Main' />
+					<Tab name="Cat Limit" />
 					<Tab name='Options' />
 				</div>
 			</div>
@@ -63,9 +64,15 @@ function App() {
 				<br />
 				<h3>Datastore</h3>
 				<label for="url-input">Server address (leave empty for local)</label>
+				<br />
 				<input ref={urlInput} id="url-input" type="text" onchange={(ev) => { localStorage.setItem("last address", ev.target.value) }} value={localStorage.getItem("last address") ?? ""} />
+				<br />
+				<br />
 				<label for="key-input">Key (leave empty for random generated key (the random generated key is stored on your local storage))</label>
+				<br />
 				<input ref={keyInput} id="key-input" type="text" />
+				<br />
+				<br />
 				<button onclick={() => { dataStore.save(urlInput.value, keyInput.value) }}>Save</button>
 				<button onclick={() => { dataStore.load(urlInput.value, keyInput.value) }}>Load</button>
 				<button onclick={() => { localStorage.removeItem("key"); localStorage.removeItem("last key used") }}>Reset Key</button>
@@ -73,7 +80,9 @@ function App() {
 			<Show when={state.tabActive === "Cat Limit"}>
 				<h3>You are on CL{dataStore.catLimit.log(1000).toString()}</h3>
 				<button onclick={() => {
-					// TODO: cat limit
+					if (dataStore.cats.lt(dataStore.catLimit)) return;
+					dataStore.clReset();
+					setDatastore("catLimit", dataStore.catLimit.mul(1000));
 				}}>Reset for cat limit increase</button>
 			</Show>
 			<Show when={state.tabActive === "null"}>
