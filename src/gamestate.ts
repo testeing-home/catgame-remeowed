@@ -1,6 +1,6 @@
 import Decimal from "break_eternity.js";
-import toast from "react-hot-toast";
-import { createStore } from "solid-js/store";
+import { createStore, reconcile } from "solid-js/store";
+import toast from "solid-toast";
 
 const newsTickerMessages = ["owo", "uwu", "hello", "uparrow", "x^2", "mewo", "did you know that [REDACTED]?", "Arch Linux", "register gaining"]
 
@@ -62,6 +62,7 @@ export const [dataStore, setDatastore] = createStore({
         if (!key) key = utils.getKey();
         if (!url) { this.saveLocal(key); return; }
         const resp = fetch(`${url}/set/${key}`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -76,6 +77,34 @@ export const [dataStore, setDatastore] = createStore({
     saveLocal(key: string | null = null) {
         localStorage.setItem(key ?? utils.getKey(), JSON.stringify(dataStore))
         toast.success("Saved to device.")
+    },
+    async load(url: string | null, key: string | null = null) {
+        if (!key) key = utils.getKey();
+        if (!url) { this.loadLocal(key); return; }
+        const resp = fetch(`${url}/set/${key}`, { method: "GET" });
+        resp.then((r) => {
+            toast.promise(r.json(), {
+                loading: "Loading JSON data...",
+                success: "Successfully loaded JSON.",
+                error: "Couldn't load JSON from server."
+            }).then((json: any) => {
+                setDatastore(reconcile(json));
+            })
+        })
+        toast.promise(resp, {
+            loading: "Loading...",
+            success: "Loaded from server.",
+            error: `Failed to load from server. Error ${(await resp).status} - ${(await resp).statusText}`
+        })
+    },
+    loadLocal(key: string | null = null) {
+        const data = JSON.parse(localStorage.getItem(key ?? utils.getKey()) ?? "null")
+        if (!data) {
+            toast.error("There is no store with that key!");
+            return;
+        }
+        setDatastore(reconcile(data));
+        toast.success("Loaded from local storage.");
     }
 })
 

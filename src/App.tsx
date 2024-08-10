@@ -3,7 +3,7 @@ import './App.css'
 import utils, { dataStore, setDatastore, state } from './gamestate';
 import Tab from './Tab';
 import Upgrade from './Upgrade';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'solid-toast';
 
 let lastTime = Date.now();
 let dt = NaN;
@@ -16,7 +16,7 @@ function sleep(ms: number) {
 
 async function tick(dt: number) {
 	setDatastore("cats", dataStore.cats.add(dataStore.catsPerTick.mul(dt)));
-	if (dataStore.cats.gt(dataStore.catLimit)) {setDatastore("cats", dataStore.catLimit)};
+	if (dataStore.cats.gt(dataStore.catLimit)) { setDatastore("cats", dataStore.catLimit) };
 }
 
 function App() {
