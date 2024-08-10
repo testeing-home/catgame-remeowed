@@ -90,21 +90,29 @@ export const [dataStore, setDatastore] = createStore({
         }
         if (!url) { this.loadLocal(key); return; }
         const resp = fetch(`${url}/get/${key}`, { method: "GET" });
+        let jsonFailed = false;
         resp.then((r) => {
+            // r.body?.getReader().read().then((v) => { console.debug(new TextDecoder().decode(v.value)) })
+            // r.text().then((v) => console.debug(v));
             toast.promise(r.json(), {
                 loading: "Loading JSON data...",
                 success: "Successfully loaded JSON.",
                 error: "Couldn't load JSON from server."
             }).then((json: any) => {
+                console.debug(`Incoming JSON data: ${json}`);
                 // const dataStoreTemp: { [key: string]: any } = {}
                 for (const [key, value] of Object.entries(json)) {
                     if (typeof value === "string") {
                         json[key] = new Decimal(value);
                     }
                     if (key === "upgrades") {
+                        // console.debug(key, value)
                         //@ts-expect-error
-                        for (const [name, upgrade] of Object.entries(value)) {
-                            let upgrade: any
+                        for (const upgradeSet of Object.entries(value)) {
+                            const name = upgradeSet[0]
+                            const upgrade: any = upgradeSet[1]
+                            console.debug(key, value)
+                            console.debug(name, upgrade)
                             json[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
                         }
                     }
@@ -112,7 +120,12 @@ export const [dataStore, setDatastore] = createStore({
                 // console.log(dataStoreTemp)
                 setDatastore(reconcile(json));
             })
+                .catch((reason) => {
+                    console.error(`JSON Request Failed: ${reason}`)
+                    jsonFailed = true;
+                })
         })
+        if (jsonFailed) return;
         toast.promise(resp, {
             loading: "Loading...",
             success: "Loaded from server.",
@@ -134,8 +147,8 @@ export const [dataStore, setDatastore] = createStore({
                 for (const upgradeSet of Object.entries(value)) {
                     const name = upgradeSet[0]
                     const upgrade: any = upgradeSet[1]
-                    console.log(key, value)
-                    console.log(name, upgrade)
+                    console.debug(key, value)
+                    console.debug(name, upgrade)
                     data[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
                 }
             }
