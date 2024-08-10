@@ -77,3 +77,10 @@ Logarithmic scale for progress bars and better progress bars
 ## RA+1.1.2
 ### Changes
 - Round log scale percentage
+
+## RA+1.1.3
+### Additions
+- Added button to show local key
+
+### Changes
+- Fix custom keys
