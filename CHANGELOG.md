@@ -73,3 +73,7 @@ Logarithmic scale for progress bars and better progress bars
 ### Additions
 - Option to toggle between linear and logarithmic scale
 - Nicer and cleaner progress bars
+
+## RA+1.1.2
+### Changes
+- Round log scale percentage

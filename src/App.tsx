@@ -49,7 +49,7 @@ function App() {
 				<h3>{newsTicker()}</h3>
 				<h4 style={{ color: "GrayText" }}>The Cat Limit is {dataStore.catLimit.toString()} cats</h4>
 				{/* @ts-expect-error */}
-				<progress max={100} value={!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toNumber() : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100).toNumber()} data-label={(!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toPrecision(3) : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100)) + "%"}></progress>
+				<progress max={100} value={!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toNumber() : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100).toNumber()} data-label={(!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toStringWithDecimalPlaces(2) : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100).toStringWithDecimalPlaces(2)) + "%"}></progress>
 				<h4>You have <span class='game-value-display'>{dataStore.cats.toStringWithDecimalPlaces(2)}</span> cats</h4>
 				<h5>You gain <span class='game-value-display'>{dataStore.catsPerTick.toStringWithDecimalPlaces(2)}</span> cats per tick</h5>
 				<div>
