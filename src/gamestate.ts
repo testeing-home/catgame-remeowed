@@ -12,7 +12,7 @@ const utils = {
         if (key) return key;
         const lkey = localStorage.getItem("key");
         if (!lkey) {
-            localStorage.setItem("key", this.cyrb53("SEK" + Math.random()).toString());
+            localStorage.setItem("key", this.cyrb53("SEK") + this.cyrb53(Math.random().toString()).toString());
             return localStorage.getItem("key")!;
         } else {
             return lkey;
@@ -58,8 +58,12 @@ export const [dataStore, setDatastore] = createStore({
 
         })
     } as { [key: string]: Upgrade },
-    async save(url: string | null, key: string | null = null) {
+    async save(url: string, key: string | null = null) {
         if (!key) key = utils.getKey();
+        if (!utils.validKey(key)) {
+            toast.error("Invalid key!");
+            return;
+        }
         if (!url) { this.saveLocal(key); return; }
         const resp = fetch(`${url}/set/${key}`, {
             method: "POST",
@@ -74,20 +78,38 @@ export const [dataStore, setDatastore] = createStore({
             error: `Failed to save to server. Error ${(await resp).status} - ${(await resp).statusText}`
         })
     },
-    saveLocal(key: string | null = null) {
+    saveLocal(key: string = "") {
         localStorage.setItem(key ?? utils.getKey(), JSON.stringify(dataStore))
         toast.success("Saved to device.")
     },
-    async load(url: string | null, key: string | null = null) {
+    async load(url: string, key: string = "") {
         if (!key) key = utils.getKey();
+        if (!utils.validKey(key)) {
+            toast.error("Invalid key!");
+            return;
+        }
         if (!url) { this.loadLocal(key); return; }
-        const resp = fetch(`${url}/set/${key}`, { method: "GET" });
+        const resp = fetch(`${url}/get/${key}`, { method: "GET" });
         resp.then((r) => {
             toast.promise(r.json(), {
                 loading: "Loading JSON data...",
                 success: "Successfully loaded JSON.",
                 error: "Couldn't load JSON from server."
             }).then((json: any) => {
+                // const dataStoreTemp: { [key: string]: any } = {}
+                for (const [key, value] of Object.entries(json)) {
+                    if (typeof value === "string") {
+                        json[key] = new Decimal(value);
+                    }
+                    if (key === "upgrades") {
+                        //@ts-expect-error
+                        for (const [name, upgrade] of Object.entries(value)) {
+                            let upgrade: any
+                            json[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
+                        }
+                    }
+                }
+                // console.log(dataStoreTemp)
                 setDatastore(reconcile(json));
             })
         })
@@ -97,11 +119,31 @@ export const [dataStore, setDatastore] = createStore({
             error: `Failed to load from server. Error ${(await resp).status} - ${(await resp).statusText}`
         })
     },
-    loadLocal(key: string | null = null) {
+    loadLocal(key: string = "") {
         const data = JSON.parse(localStorage.getItem(key ?? utils.getKey()) ?? "null")
         if (!data) {
             toast.error("There is no store with that key!");
             return;
+        }
+        for (const [key, value] of Object.entries(data)) {
+            if (typeof value === "string") {
+                data[key] = new Decimal(value);
+            }
+            if (key === "upgrades") {
+                //@ts-expect-error
+                for (const upgradeSet of Object.entries(value)) {
+                    const name = upgradeSet[0]
+                    const upgrade: any = upgradeSet[1]
+                    console.log(key, value)
+                    console.log(name, upgrade)
+                    data[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
+                }
+            }
+            for (const [dk, dv] of Object.entries(this)) {
+                if (!Object.keys(data).includes(dk)) {
+                    data[dk] = dv
+                }
+            }
         }
         setDatastore(reconcile(data));
         toast.success("Loaded from local storage.");

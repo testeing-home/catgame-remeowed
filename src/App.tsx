@@ -29,6 +29,9 @@ function App() {
 		await sleep(tps);
 	}, 1000 / maxTPS)
 
+	let keyInput!: HTMLInputElement;
+	let urlInput!: HTMLInputElement;
+
 	return (
 		<>
 			<Toaster />
@@ -49,8 +52,17 @@ function App() {
 				<Upgrade name="catFood" />
 			</Show>
 			<Show when={state.tabActive === "Options"}>
-				<h3>You have played for Unknown ago</h3>
-				<h3>Your highest cats are Unknown Cats</h3>
+				<h4>You have played for Unknown ago</h4>
+				<h4>Your highest cats are Unknown Cats</h4>
+				<br />
+				<h3>Datastore</h3>
+				<label for="url-input">Server address (leave empty for local)</label>
+				<input ref={urlInput} id="url-input" type="text" />
+				<label for="key-input">Key (leave empty for random generated key (the random generated key is stored on your local storage))</label>
+				<input ref={keyInput} id="key-input" type="text" />
+				<button onclick={() => { dataStore.save(urlInput.value, keyInput.value) }}>Save</button>
+				<button onclick={() => { dataStore.load(urlInput.value, keyInput.value) }}>Load</button>
+				<button onclick={() => { localStorage.removeItem("key") }}>Reset Key</button>
 			</Show>
 			<Show when={state.tabActive === "null"}>
 				<p>Loafing...</p>
