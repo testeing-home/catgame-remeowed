@@ -57,7 +57,7 @@ function App() {
 				<br />
 				<h3>Datastore</h3>
 				<label for="url-input">Server address (leave empty for local)</label>
-				<input ref={urlInput} id="url-input" type="text" />
+				<input ref={urlInput} id="url-input" type="text" onchange={(ev) => { localStorage.setItem("last address", ev.target.value) }} value={localStorage.getItem("last address") ?? ""} />
 				<label for="key-input">Key (leave empty for random generated key (the random generated key is stored on your local storage))</label>
 				<input ref={keyInput} id="key-input" type="text" />
 				<button onclick={() => { dataStore.save(urlInput.value, keyInput.value) }}>Save</button>

@@ -1,4 +1,6 @@
 import json
+from threading import Thread
+from time import sleep
 from flask import Flask, Response, request
 from catbase import CatDB
 from flask_cors import CORS
@@ -21,5 +23,15 @@ def set_key_data(key: str):
     key_data[key] = json.loads(request.get_data().decode())
     return Response(None, 200)
 
+
+def save_task():
+    while True:
+        sleep(5)
+        key_data.commit()
+
+
+thread = Thread(None, save_task)
+thread.daemon = True
+thread.start()
 
 app.run()
