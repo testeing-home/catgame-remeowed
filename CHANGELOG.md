@@ -84,3 +84,7 @@ Logarithmic scale for progress bars and better progress bars
 
 ### Changes
 - Fix custom keys
+
+## RA+1.1.4
+### Changes
+- Refix custom keys and fix a weird bug

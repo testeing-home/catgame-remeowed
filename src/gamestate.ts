@@ -107,7 +107,8 @@ export const [dataStore, setDatastore] = createStore({
                 success: "Successfully loaded JSON.",
                 error: "Couldn't load JSON from server."
             }).then((json: any) => {
-                console.debug(`Incoming JSON data: ${json}`);
+                console.debug(json)
+                // console.debug(`Incoming JSON data: ${Object.entries}`);
                 // const dataStoreTemp: { [key: string]: any } = {}
                 for (const [key, value] of Object.entries(json)) {
                     if (typeof value === "string") {

@@ -16,7 +16,7 @@ key_data = CatDB("database/key.json", none={})
 @app.route("/get/<key>", methods=["GET"])
 def get_key_data(key: str):
     print(f"Outgoing traffic to {request.remote_addr}: {key_data[key]}")
-    return Response(str(key_data[key]).replace("'", '"'))
+    return Response(json.dumps(key_data[key]))
 
 
 @app.route("/set/<key>", methods=["POST"])

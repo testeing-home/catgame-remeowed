@@ -11,7 +11,7 @@ let dt = NaN;
 let tps = 20;
 let maxTPS = 200;
 
-const VERSION = "RA+1.1.3"
+const VERSION = "RA+1.1.4"
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -81,8 +81,8 @@ function App() {
 				<input ref={keyInput} id="key-input" type="text" />
 				<br />
 				<br />
-				<button onclick={() => { dataStore.save(urlInput.value, !keyInput.value ? "" : utils.cyrb53("SEK") + utils.cyrb53(keyInput.value) + "") }}>Save</button>
-				<button onclick={() => { dataStore.load(urlInput.value, !keyInput.value ? "" : utils.cyrb53("SEK") + utils.cyrb53(keyInput.value) + "") }}>Load</button>
+				<button onclick={() => { dataStore.save(urlInput.value, !keyInput.value ? "" : utils.cyrb53("SEK").toString() + utils.cyrb53(keyInput.value).toString()) }}>Save</button>
+				<button onclick={() => { dataStore.load(urlInput.value, !keyInput.value ? "" : utils.cyrb53("SEK").toString() + utils.cyrb53(keyInput.value).toString()) }}>Load</button>
 				<button onclick={() => { localStorage.removeItem("key"); localStorage.removeItem("last key used") }}>Reset Key</button>
 				<button onclick={() => { alert(`Your local key is: ${utils.getKey()}`) }}>Show local key</button>
 			</Show>
