@@ -8,6 +8,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app)
 
+VERSION = "SA-1.0.0"
+
 key_data = CatDB("database/key.json", none={})
 
 
@@ -34,4 +36,5 @@ thread = Thread(None, save_task)
 thread.daemon = True
 thread.start()
 
+print(f"CGRM Data Handling Server {VERSION}")
 app.run()

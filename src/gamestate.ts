@@ -39,7 +39,7 @@ const utils = {
 
 class Upgrade {
     level: Decimal = Decimal.dZero;
-    constructor(public name: string, private nextCost1: number, private nextCost2: number, public buySuccess: VoidFunction) { }
+    constructor(public name: string, private nextCost1: number, private nextCost2: number, public buySuccess: VoidFunction = () => { }) { }
     get cost() {
         return new Decimal(this.nextCost1).times(new Decimal(this.nextCost2).pow(this.level))
     }
@@ -48,15 +48,21 @@ class Upgrade {
 export const [dataStore, setDatastore] = createStore({
     cats: new Decimal(11),
     catLimit: new Decimal(1000),
+    calculateCatsPerTick() {
+        // TODO: Better magic
+        const baseCPT: Decimal = this.upgrades.catSummoner.level.pow(1).times(new Decimal(1.75).pow(this.upgrades.catFood.level));
+
+        const clBoost = new Decimal(1.05).pow(this.catLimit.log(1000).minus(1));
+
+        const final = baseCPT.times(clBoost)
+
+        return final;
+    },
     catsPerTick: Decimal.dZero,
     multiplier: Decimal.dOne,
     upgrades: {
-        catSummoner: new Upgrade("Cat Summoner", 10, 1.75, () => {
-            setDatastore("catsPerTick", dataStore.catsPerTick.plus(1))
-        }),
-        catFood: new Upgrade("Cat Food", 25, 2.05, () => {
-
-        })
+        catSummoner: new Upgrade("Cat Summoner", 10, 1.75),
+        catFood: new Upgrade("Cat Food", 25, 2.05)
     } as { [key: string]: Upgrade },
     async save(url: string, key: string | null = null) {
         if (!key) key = utils.getKey();
@@ -116,14 +122,24 @@ export const [dataStore, setDatastore] = createStore({
                             json[key][name] = new Upgrade(upgrade.name, upgrade.nextCost1, upgrade.nextCost2, dataStore.upgrades[name].buySuccess)
                         }
                     }
+                    // if (key === "catsPerTick") continue;
+                    // console.debug(">> Enter if exist loop")
+                    for (const [dk, dv] of Object.entries(this)) {
+                        // if (dk === "catsPerTick") continue;
+                        // console.debug(dk, dv)
+                        if (!Object.keys(json).includes(dk)) {
+                            json[dk] = dv
+                        }
+                    }
                 }
                 // console.log(dataStoreTemp)
                 setDatastore(reconcile(json));
+                localStorage.setItem("last key used", key)
             })
-                .catch((reason) => {
-                    console.error(`JSON Request Failed: ${reason}`)
-                    jsonFailed = true;
-                })
+            // .catch((reason) => {
+            //     console.error(`JSON Request Failed: ${reason}`)
+            //     jsonFailed = true;
+            // })
         })
         if (jsonFailed) return;
         toast.promise(resp, {
