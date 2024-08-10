@@ -66,3 +66,10 @@ Cat Limits are added!
 ### Changes
 - Buttons now have a margin around them of 10 pixels
 - Datastore section now looks nicer
+
+## RA+1.1.1
+Logarithmic scale for progress bars and better progress bars
+
+### Additions
+- Option to toggle between linear and logarithmic scale
+- Nicer and cleaner progress bars

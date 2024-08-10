@@ -4,13 +4,14 @@ import utils, { dataStore, setDatastore, state } from './gamestate';
 import Tab from './Tab';
 import Upgrade from './Upgrade';
 import toast, { Toaster } from 'solid-toast';
+import { reconcile } from 'solid-js/store';
 
 let lastTime = Date.now();
 let dt = NaN;
 let tps = 20;
 let maxTPS = 200;
 
-const VERSION = "RA$-1.1.0"
+const VERSION = "RA$-1.1.1"
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -35,7 +36,10 @@ function App() {
 	let keyInput!: HTMLInputElement;
 	let urlInput!: HTMLInputElement;
 
+
 	dataStore.load(localStorage.getItem("last address") ?? "", utils.getKey(localStorage.getItem("last key used"))).then(() => toast.success("Loaded store from last key.")).catch((reason) => toast.error(`Couldn't load store: ${reason}`));
+
+	const useLogCheck = <input type="checkbox" name="use-log" id="use-log" checked={dataStore.options.useLog} onchange={(ev) => { setDatastore("options", reconcile({ useLog: ev.target.checked })) }} />;
 
 	return (
 		<>
@@ -44,8 +48,8 @@ function App() {
 			<div style={{ position: "sticky" }}>
 				<h3>{newsTicker()}</h3>
 				<h4 style={{ color: "GrayText" }}>The Cat Limit is {dataStore.catLimit.toString()} cats</h4>
-				<progress max={100} value={dataStore.cats.dividedBy(dataStore.catLimit).times(100).toNumber()}></progress>
-				<span>{dataStore.cats.dividedBy(dataStore.catLimit).times(100).toPrecision(3)}%</span>
+				{/* @ts-expect-error */}
+				<progress max={100} value={!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toNumber() : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100).toNumber()} data-label={(!useLogCheck!.checked ? dataStore.cats.dividedBy(dataStore.catLimit).times(100).toPrecision(3) : dataStore.cats.log10().divide(dataStore.catLimit.log10()).times(100)) + "%"}></progress>
 				<h4>You have <span class='game-value-display'>{dataStore.cats.toStringWithDecimalPlaces(2)}</span> cats</h4>
 				<h5>You gain <span class='game-value-display'>{dataStore.catsPerTick.toStringWithDecimalPlaces(2)}</span> cats per tick</h5>
 				<div>
@@ -61,6 +65,10 @@ function App() {
 			<Show when={state.tabActive === "Options"}>
 				<h4>You have played for Unknown ago</h4>
 				<h4>Your highest cats are Unknown Cats</h4>
+				<br />
+				<h3>Options</h3>
+				<label for="use-log">Use logarithmic scale for the cat limit progress bar</label>
+				{useLogCheck}
 				<br />
 				<h3>Datastore</h3>
 				<label for="url-input">Server address (leave empty for local)</label>

@@ -1,0 +1,29 @@
+progress {
+    height: 24px;
+    border-radius: 6px;
+    width: 40vw;
+}
+
+progress::before {
+    content: attr(data-label);
+    vertical-align: 0;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    color: whitesmoke;
+    mix-blend-mode: difference;
+}
+
+::-webkit-progress-bar {
+    border-radius: 6px;
+    border: 1px solid whitesmoke;
+    background: #1a1a1a;
+}
+
+::-webkit-progress-value {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background: whitesmoke;
+}

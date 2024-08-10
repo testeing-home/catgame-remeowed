@@ -63,6 +63,9 @@ export const [dataStore, setDatastore] = createStore({
         catSummoner: new Upgrade("Cat Summoner", 10, 1.75),
         catFood: new Upgrade("Cat Food", 25, 2.05)
     } as { [key: string]: Upgrade },
+    options: {
+        useLog: false
+    },
     async save(url: string, key: string | null = null) {
         if (!key) key = utils.getKey();
         if (!utils.validKey(key)) {
